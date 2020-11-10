@@ -1,0 +1,202 @@
+   1              		.file	"timer.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.section	.text.timer_tick,"ax",@progbits
+   5              		.globl	timer_tick
+   7              	timer_tick:
+   8              	.LFB0:
+   9              		.file 1 "host/timer.c"
+   1:host/timer.c  **** #include <stdint.h>
+   2:host/timer.c  **** #include "myLib.h"
+   3:host/timer.c  **** 
+   4:host/timer.c  **** #include <time.h>
+   5:host/timer.c  **** 
+   6:host/timer.c  **** uint64_t timer_tick( void )
+   7:host/timer.c  **** {
+  10              		.loc 1 7 1
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  18 0008 4883EC30 		subq	$48, %rsp
+  19              		.loc 1 7 1
+  20 000c 64488B04 		movq	%fs:40, %rax
+  20      25280000 
+  20      00
+  21 0015 488945F8 		movq	%rax, -8(%rbp)
+  22 0019 31C0     		xorl	%eax, %eax
+   8:host/timer.c  ****     struct timespec ts;
+   9:host/timer.c  ****     time_t seconds, nanoSeconds;
+  10:host/timer.c  **** 
+  11:host/timer.c  ****     (void)clock_gettime( CLOCK_MONOTONIC, &ts );
+  23              		.loc 1 11 11
+  24 001b 488D45E0 		leaq	-32(%rbp), %rax
+  25 001f 4889C6   		movq	%rax, %rsi
+  26 0022 BF010000 		movl	$1, %edi
+  26      00
+  27 0027 E8000000 		call	clock_gettime@PLT
+  27      00
+  12:host/timer.c  **** 
+  13:host/timer.c  ****     nanoSeconds = ts.tv_nsec / 1000000;
+  28              		.loc 1 13 21
+  29 002c 488B4DE8 		movq	-24(%rbp), %rcx
+  30              		.loc 1 13 17
+  31 0030 48BADB34 		movabsq	$4835703278458516699, %rdx
+  31      B6D782DE 
+  31      1B43
+  32 003a 4889C8   		movq	%rcx, %rax
+  33 003d 48F7EA   		imulq	%rdx
+  34 0040 48C1FA12 		sarq	$18, %rdx
+  35 0044 4889C8   		movq	%rcx, %rax
+  36 0047 48C1F83F 		sarq	$63, %rax
+  37 004b 4829C2   		subq	%rax, %rdx
+  38 004e 4889D0   		movq	%rdx, %rax
+  39 0051 488945D0 		movq	%rax, -48(%rbp)
+  14:host/timer.c  ****     seconds = ts.tv_sec * 1000;
+  40              		.loc 1 14 17
+  41 0055 488B45E0 		movq	-32(%rbp), %rax
+  42              		.loc 1 14 13
+  43 0059 4869C0E8 		imulq	$1000, %rax, %rax
+  43      030000
+  44 0060 488945D8 		movq	%rax, -40(%rbp)
+  15:host/timer.c  **** 
+  16:host/timer.c  ****     return seconds + nanoSeconds;
+  45              		.loc 1 16 20
+  46 0064 488B55D8 		movq	-40(%rbp), %rdx
+  47 0068 488B45D0 		movq	-48(%rbp), %rax
+  48 006c 4801D0   		addq	%rdx, %rax
+  17:host/timer.c  **** }
+  49              		.loc 1 17 1
+  50 006f 488B75F8 		movq	-8(%rbp), %rsi
+  51 0073 64483334 		xorq	%fs:40, %rsi
+  51      25280000 
+  51      00
+  52 007c 7405     		je	.L3
+  53 007e E8000000 		call	__stack_chk_fail@PLT
+  53      00
+  54              	.L3:
+  55 0083 C9       		leave
+  56              		.cfi_def_cfa 7, 8
+  57 0084 C3       		ret
+  58              		.cfi_endproc
+  59              	.LFE0:
+  61              		.section	.text.timer_start,"ax",@progbits
+  62              		.globl	timer_start
+  64              	timer_start:
+  65              	.LFB1:
+  18:host/timer.c  **** 
+  19:host/timer.c  **** void timer_start(uint64_t *timer)
+  20:host/timer.c  **** {
+  66              		.loc 1 20 1
+  67              		.cfi_startproc
+  68 0000 F30F1EFA 		endbr64
+  69 0004 55       		pushq	%rbp
+  70              		.cfi_def_cfa_offset 16
+  71              		.cfi_offset 6, -16
+  72 0005 4889E5   		movq	%rsp, %rbp
+  73              		.cfi_def_cfa_register 6
+  74 0008 4883EC10 		subq	$16, %rsp
+  75 000c 48897DF8 		movq	%rdi, -8(%rbp)
+  21:host/timer.c  ****     *timer = timer_tick();
+  76              		.loc 1 21 14
+  77 0010 E8000000 		call	timer_tick
+  77      00
+  78              		.loc 1 21 12
+  79 0015 488B55F8 		movq	-8(%rbp), %rdx
+  80 0019 488902   		movq	%rax, (%rdx)
+  22:host/timer.c  **** }
+  81              		.loc 1 22 1
+  82 001c 90       		nop
+  83 001d C9       		leave
+  84              		.cfi_def_cfa 7, 8
+  85 001e C3       		ret
+  86              		.cfi_endproc
+  87              	.LFE1:
+  89              		.section	.text.timer_get_relative,"ax",@progbits
+  90              		.globl	timer_get_relative
+  92              	timer_get_relative:
+  93              	.LFB2:
+  23:host/timer.c  **** 
+  24:host/timer.c  **** uint64_t timer_get_relative(uint64_t timer)
+  25:host/timer.c  **** {
+  94              		.loc 1 25 1
+  95              		.cfi_startproc
+  96 0000 F30F1EFA 		endbr64
+  97 0004 55       		pushq	%rbp
+  98              		.cfi_def_cfa_offset 16
+  99              		.cfi_offset 6, -16
+ 100 0005 4889E5   		movq	%rsp, %rbp
+ 101              		.cfi_def_cfa_register 6
+ 102 0008 4883EC10 		subq	$16, %rsp
+ 103 000c 48897DF8 		movq	%rdi, -8(%rbp)
+  26:host/timer.c  ****     return timer_tick() - timer;
+ 104              		.loc 1 26 12
+ 105 0010 E8000000 		call	timer_tick
+ 105      00
+ 106              		.loc 1 26 25
+ 107 0015 482B45F8 		subq	-8(%rbp), %rax
+  27:host/timer.c  **** }
+ 108              		.loc 1 27 1
+ 109 0019 C9       		leave
+ 110              		.cfi_def_cfa 7, 8
+ 111 001a C3       		ret
+ 112              		.cfi_endproc
+ 113              	.LFE2:
+ 115              		.text
+ 116              	.Letext0:
+ 117              		.file 2 "/usr/include/x86_64-linux-gnu/bits/types.h"
+ 118              		.file 3 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
+ 119              		.file 4 "/usr/include/x86_64-linux-gnu/bits/types/time_t.h"
+ 120              		.file 5 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h"
+ 121              		.file 6 "src/myLib.h"
+ 122              		.file 7 "/usr/include/time.h"
+ 4789              		.section	.note.gnu.property,"a"
+ 4790              		.align 8
+ 4791 0000 04000000 		.long	 1f - 0f
+ 4792 0004 10000000 		.long	 4f - 1f
+ 4793 0008 05000000 		.long	 5
+ 4794              	0:
+ 4795 000c 474E5500 		.string	 "GNU"
+ 4796              	1:
+ 4797              		.align 8
+ 4798 0010 020000C0 		.long	 0xc0000002
+ 4799 0014 04000000 		.long	 3f - 2f
+ 4800              	2:
+ 4801 0018 03000000 		.long	 0x3
+ 4802              	3:
+ 4803 001c 00000000 		.align 8
+ 4804              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 timer.c
+     /tmp/ccIb0hNp.s:7      .text.timer_tick:0000000000000000 timer_tick
+     /tmp/ccIb0hNp.s:64     .text.timer_start:0000000000000000 timer_start
+     /tmp/ccIb0hNp.s:92     .text.timer_get_relative:0000000000000000 timer_get_relative
+                           .group:0000000000000000 wm4.0.dfe1f935d32669a27ae367b33aa40043
+                           .group:0000000000000000 wm4.stdcpredef.h.19.8dc41bed5d9037ff9622e015fb5f0ce3
+                           .group:0000000000000000 wm4.stdint.h.23.022efde71688fcb285fe42cc87d41ee3
+                           .group:0000000000000000 wm4.features.h.19.3042b63a76022a6d39c0cfc1936a7a01
+                           .group:0000000000000000 wm4.cdefs.h.19.a8ffc9250e5bdadaabc998d2b2f3d734
+                           .group:0000000000000000 wm4.wordsize.h.4.baf119258a1e53d8dba67ceac44ab6bc
+                           .group:0000000000000000 wm4.cdefs.h.475.fb75d2e4416aa349344e6f45f683bf28
+                           .group:0000000000000000 wm4.stubs64.h.10.6ce4c34010988db072c080326a6b6319
+                           .group:0000000000000000 wm4.libcheaderstart.h.37.d9274df4cc0172452960ad9644fa5579
+                           .group:0000000000000000 wm4.types.h.109.56eb9ae966b255288cc544f18746a7ff
+                           .group:0000000000000000 wm4.typesizes.h.24.2c64f817c0dc4b6fb2a2c619d717be26
+                           .group:0000000000000000 wm4.time64.h.24.a8166ae916ec910dab0d8987098d42ee
+                           .group:0000000000000000 wm4.wchar.h.20.510818a05484290d697a517509bf4b2d
+                           .group:0000000000000000 wm4.stdint.h.88.7e8071bbba3b822ff5b29420f80324ec
+                           .group:0000000000000000 wm4.myLib.h.2.c5256e6131e659f9ae0422f590fe566a
+                           .group:0000000000000000 wm4.time.h.23.18ede267f3a48794bef4705df80339de
+                           .group:0000000000000000 wm4.stddef.h.181.c3f52a3b0f4c288bddb5dda1562858e2
+                           .group:0000000000000000 wm4.time.h.24.2a1e1114b014e13763222c5cd6400760
+                           .group:0000000000000000 wm4.endian.h.20.efabd1018df5d7b4052c27dc6bdd5ce5
+                           .group:0000000000000000 wm4.endianness.h.2.2c6a211f7909f3af5e9e9cfa3b6b63c8
+                           .group:0000000000000000 wm4.endian.h.40.9e5d395adda2f4eb53ae69b69b664084
+
+UNDEFINED SYMBOLS
+_GLOBAL_OFFSET_TABLE_
+clock_gettime
+__stack_chk_fail

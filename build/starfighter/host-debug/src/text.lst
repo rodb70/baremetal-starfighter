@@ -1,0 +1,214 @@
+   1              		.file	"text.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.section	.text.drawChar,"ax",@progbits
+   5              		.globl	drawChar
+   7              	drawChar:
+   8              	.LFB0:
+   9              		.file 1 "src/text.c"
+   1:src/text.c    **** #include "myLib.h"
+   2:src/text.c    **** #include "text.h"
+   3:src/text.c    **** 
+   4:src/text.c    **** void drawChar(int row, int col, char ch, uint16_t color)
+   5:src/text.c    **** {
+  10              		.loc 1 5 1
+  11              		.cfi_startproc
+  12 0000 F30F1EFA 		endbr64
+  13 0004 55       		pushq	%rbp
+  14              		.cfi_def_cfa_offset 16
+  15              		.cfi_offset 6, -16
+  16 0005 4889E5   		movq	%rsp, %rbp
+  17              		.cfi_def_cfa_register 6
+  18 0008 4883EC20 		subq	$32, %rsp
+  19 000c 897DEC   		movl	%edi, -20(%rbp)
+  20 000f 8975E8   		movl	%esi, -24(%rbp)
+  21 0012 89C8     		movl	%ecx, %eax
+  22 0014 8855E4   		movb	%dl, -28(%rbp)
+  23 0017 668945E0 		movw	%ax, -32(%rbp)
+  24              	.LBB2:
+   6:src/text.c    **** 	for(int my_col=0; my_col < 8; my_col++)
+  25              		.loc 1 6 10
+  26 001b C745F800 		movl	$0, -8(%rbp)
+  26      000000
+  27              		.loc 1 6 2
+  28 0022 EB68     		jmp	.L2
+  29              	.L6:
+  30              	.LBB3:
+   7:src/text.c    **** 	{
+   8:src/text.c    **** 		for(int my_row = 0; my_row < 6; my_row++)
+  31              		.loc 1 8 11
+  32 0024 C745FC00 		movl	$0, -4(%rbp)
+  32      000000
+  33              		.loc 1 8 3
+  34 002b EB55     		jmp	.L3
+  35              	.L5:
+   9:src/text.c    **** 		{
+  10:src/text.c    **** 			if(fontdata_6x8[OFFSET(my_col, my_row, 6) + ch * 48])
+  36              		.loc 1 10 20
+  37 002d 8B55F8   		movl	-8(%rbp), %edx
+  38 0030 89D0     		movl	%edx, %eax
+  39 0032 01C0     		addl	%eax, %eax
+  40 0034 01D0     		addl	%edx, %eax
+  41 0036 01C0     		addl	%eax, %eax
+  42 0038 89C2     		movl	%eax, %edx
+  43 003a 8B45FC   		movl	-4(%rbp), %eax
+  44 003d 8D0C02   		leal	(%rdx,%rax), %ecx
+  45              		.loc 1 10 51
+  46 0040 0FBE55E4 		movsbl	-28(%rbp), %edx
+  47 0044 89D0     		movl	%edx, %eax
+  48 0046 01C0     		addl	%eax, %eax
+  49 0048 01D0     		addl	%edx, %eax
+  50 004a C1E004   		sall	$4, %eax
+  51              		.loc 1 10 46
+  52 004d 01C8     		addl	%ecx, %eax
+  53              		.loc 1 10 19
+  54 004f 4898     		cltq
+  55 0051 488D1500 		leaq	fontdata_6x8(%rip), %rdx
+  55      000000
+  56 0058 0FB60410 		movzbl	(%rax,%rdx), %eax
+  57              		.loc 1 10 6
+  58 005c 84C0     		testb	%al, %al
+  59 005e 741E     		je	.L4
+  11:src/text.c    **** 			{
+  12:src/text.c    **** 				setPixel(row + my_row, col + my_col, color);
+  60              		.loc 1 12 5
+  61 0060 0FB745E0 		movzwl	-32(%rbp), %eax
+  62 0064 8B4DE8   		movl	-24(%rbp), %ecx
+  63 0067 8B55F8   		movl	-8(%rbp), %edx
+  64 006a 8D3411   		leal	(%rcx,%rdx), %esi
+  65 006d 8B4DEC   		movl	-20(%rbp), %ecx
+  66 0070 8B55FC   		movl	-4(%rbp), %edx
+  67 0073 01D1     		addl	%edx, %ecx
+  68 0075 89C2     		movl	%eax, %edx
+  69 0077 89CF     		movl	%ecx, %edi
+  70 0079 E8000000 		call	setPixel@PLT
+  70      00
+  71              	.L4:
+   8:src/text.c    **** 		{
+  72              		.loc 1 8 41 discriminator 2
+  73 007e 8345FC01 		addl	$1, -4(%rbp)
+  74              	.L3:
+   8:src/text.c    **** 		{
+  75              		.loc 1 8 3 discriminator 1
+  76 0082 837DFC05 		cmpl	$5, -4(%rbp)
+  77 0086 7EA5     		jle	.L5
+  78              	.LBE3:
+   6:src/text.c    **** 	{
+  79              		.loc 1 6 38 discriminator 2
+  80 0088 8345F801 		addl	$1, -8(%rbp)
+  81              	.L2:
+   6:src/text.c    **** 	{
+  82              		.loc 1 6 2 discriminator 1
+  83 008c 837DF807 		cmpl	$7, -8(%rbp)
+  84 0090 7E92     		jle	.L6
+  85              	.LBE2:
+  13:src/text.c    **** 			}
+  14:src/text.c    **** 		}
+  15:src/text.c    **** 	}
+  16:src/text.c    **** }
+  86              		.loc 1 16 1
+  87 0092 90       		nop
+  88 0093 90       		nop
+  89 0094 C9       		leave
+  90              		.cfi_def_cfa 7, 8
+  91 0095 C3       		ret
+  92              		.cfi_endproc
+  93              	.LFE0:
+  95              		.section	.text.drawString,"ax",@progbits
+  96              		.globl	drawString
+  98              	drawString:
+  99              	.LFB1:
+  17:src/text.c    **** 
+  18:src/text.c    **** void drawString(int col, int row, char *str, uint16_t color)
+  19:src/text.c    **** {
+ 100              		.loc 1 19 1
+ 101              		.cfi_startproc
+ 102 0000 F30F1EFA 		endbr64
+ 103 0004 55       		pushq	%rbp
+ 104              		.cfi_def_cfa_offset 16
+ 105              		.cfi_offset 6, -16
+ 106 0005 4889E5   		movq	%rsp, %rbp
+ 107              		.cfi_def_cfa_register 6
+ 108 0008 4883EC20 		subq	$32, %rsp
+ 109 000c 897DFC   		movl	%edi, -4(%rbp)
+ 110 000f 8975F8   		movl	%esi, -8(%rbp)
+ 111 0012 488955F0 		movq	%rdx, -16(%rbp)
+ 112 0016 89C8     		movl	%ecx, %eax
+ 113 0018 668945EC 		movw	%ax, -20(%rbp)
+  20:src/text.c    **** 	while(*str)
+ 114              		.loc 1 20 7
+ 115 001c EB27     		jmp	.L8
+ 116              	.L9:
+  21:src/text.c    **** 	{
+  22:src/text.c    **** 		drawChar(row, col, *str++, color);
+ 117              		.loc 1 22 3
+ 118 001e 0FB74DEC 		movzwl	-20(%rbp), %ecx
+ 119              		.loc 1 22 26
+ 120 0022 488B45F0 		movq	-16(%rbp), %rax
+ 121 0026 488D5001 		leaq	1(%rax), %rdx
+ 122 002a 488955F0 		movq	%rdx, -16(%rbp)
+ 123              		.loc 1 22 22
+ 124 002e 0FB600   		movzbl	(%rax), %eax
+ 125              		.loc 1 22 3
+ 126 0031 0FBED0   		movsbl	%al, %edx
+ 127 0034 8B75FC   		movl	-4(%rbp), %esi
+ 128 0037 8B45F8   		movl	-8(%rbp), %eax
+ 129 003a 89C7     		movl	%eax, %edi
+ 130 003c E8000000 		call	drawChar
+ 130      00
+  23:src/text.c    **** 		row += 6;
+ 131              		.loc 1 23 7
+ 132 0041 8345F806 		addl	$6, -8(%rbp)
+ 133              	.L8:
+  20:src/text.c    **** 	while(*str)
+ 134              		.loc 1 20 8
+ 135 0045 488B45F0 		movq	-16(%rbp), %rax
+ 136 0049 0FB600   		movzbl	(%rax), %eax
+  20:src/text.c    **** 	while(*str)
+ 137              		.loc 1 20 7
+ 138 004c 84C0     		testb	%al, %al
+ 139 004e 75CE     		jne	.L9
+  24:src/text.c    **** 	}
+  25:src/text.c    **** 
+  26:src/text.c    **** 
+  27:src/text.c    **** }
+ 140              		.loc 1 27 1
+ 141 0050 90       		nop
+ 142 0051 90       		nop
+ 143 0052 C9       		leave
+ 144              		.cfi_def_cfa 7, 8
+ 145 0053 C3       		ret
+ 146              		.cfi_endproc
+ 147              	.LFE1:
+ 149              		.text
+ 150              	.Letext0:
+ 151              		.file 2 "src/myLib.h"
+ 152              		.file 3 "src/text.h"
+ 2704              		.section	.note.gnu.property,"a"
+ 2705              		.align 8
+ 2706 0000 04000000 		.long	 1f - 0f
+ 2707 0004 10000000 		.long	 4f - 1f
+ 2708 0008 05000000 		.long	 5
+ 2709              	0:
+ 2710 000c 474E5500 		.string	 "GNU"
+ 2711              	1:
+ 2712              		.align 8
+ 2713 0010 020000C0 		.long	 0xc0000002
+ 2714 0014 04000000 		.long	 3f - 2f
+ 2715              	2:
+ 2716 0018 03000000 		.long	 0x3
+ 2717              	3:
+ 2718 001c 00000000 		.align 8
+ 2719              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 text.c
+     /tmp/cc1hnyCe.s:7      .text.drawChar:0000000000000000 drawChar
+     /tmp/cc1hnyCe.s:98     .text.drawString:0000000000000000 drawString
+                           .group:0000000000000000 wm4.0.dfe1f935d32669a27ae367b33aa40043
+                           .group:0000000000000000 wm4.stdcpredef.h.19.8dc41bed5d9037ff9622e015fb5f0ce3
+                           .group:0000000000000000 wm4.myLib.h.2.c5256e6131e659f9ae0422f590fe566a
+
+UNDEFINED SYMBOLS
+fontdata_6x8
+_GLOBAL_OFFSET_TABLE_
+setPixel

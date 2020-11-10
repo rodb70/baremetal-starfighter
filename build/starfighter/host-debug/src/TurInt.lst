@@ -1,0 +1,33 @@
+   1              		.file	"TurInt.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.globl	TurInt
+   5              		.section	.rodata.TurInt,"a"
+   6              		.align 32
+   9              	TurInt:
+ 145              		.text
+ 146              	.Letext0:
+ 147              		.file 1 "src/TurInt.c"
+ 2067              		.section	.note.gnu.property,"a"
+ 2068              		.align 8
+ 2069 0000 04000000 		.long	 1f - 0f
+ 2070 0004 10000000 		.long	 4f - 1f
+ 2071 0008 05000000 		.long	 5
+ 2072              	0:
+ 2073 000c 474E5500 		.string	 "GNU"
+ 2074              	1:
+ 2075              		.align 8
+ 2076 0010 020000C0 		.long	 0xc0000002
+ 2077 0014 04000000 		.long	 3f - 2f
+ 2078              	2:
+ 2079 0018 03000000 		.long	 0x3
+ 2080              	3:
+ 2081 001c 00000000 		.align 8
+ 2082              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 TurInt.c
+     /tmp/ccuhp3kF.s:9      .rodata.TurInt:0000000000000000 TurInt
+                           .group:0000000000000000 wm4.0.dfe1f935d32669a27ae367b33aa40043
+                           .group:0000000000000000 wm4.stdcpredef.h.19.8dc41bed5d9037ff9622e015fb5f0ce3
+
+NO UNDEFINED SYMBOLS

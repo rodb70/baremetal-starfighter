@@ -1,0 +1,33 @@
+   1              		.file	"RedBullet.c"
+   2              		.text
+   3              	.Ltext0:
+   4              		.globl	RedBullet
+   5              		.section	.rodata.RedBullet,"a"
+   6              		.align 32
+   9              	RedBullet:
+  31              		.text
+  32              	.Letext0:
+  33              		.file 1 "src/RedBullet.c"
+ 1953              		.section	.note.gnu.property,"a"
+ 1954              		.align 8
+ 1955 0000 04000000 		.long	 1f - 0f
+ 1956 0004 10000000 		.long	 4f - 1f
+ 1957 0008 05000000 		.long	 5
+ 1958              	0:
+ 1959 000c 474E5500 		.string	 "GNU"
+ 1960              	1:
+ 1961              		.align 8
+ 1962 0010 020000C0 		.long	 0xc0000002
+ 1963 0014 04000000 		.long	 3f - 2f
+ 1964              	2:
+ 1965 0018 03000000 		.long	 0x3
+ 1966              	3:
+ 1967 001c 00000000 		.align 8
+ 1968              	4:
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 RedBullet.c
+     /tmp/ccRmW7yD.s:9      .rodata.RedBullet:0000000000000000 RedBullet
+                           .group:0000000000000000 wm4.0.dfe1f935d32669a27ae367b33aa40043
+                           .group:0000000000000000 wm4.stdcpredef.h.19.8dc41bed5d9037ff9622e015fb5f0ce3
+
+NO UNDEFINED SYMBOLS
