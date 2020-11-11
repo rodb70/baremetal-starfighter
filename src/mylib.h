@@ -1,18 +1,20 @@
 #ifndef MY_LIB_H
 #define MY_LIB_H
+#include <stdbool.h>
+#include <stdint.h>
 
-typedef unsigned char uint8_t;
+/*typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
 typedef unsigned int uint32_t;
-
+*/
 typedef volatile unsigned char vuint8_t;
 typedef volatile unsigned short vuint16_t;
 typedef volatile unsigned int vuint32_t;
-
+/*
 typedef signed char int8_t;
 typedef signed short int16_t;
 typedef signed int int32_t;
-
+*/
 typedef volatile signed char vint8_t;
 typedef volatile signed short vint16_t;
 typedef volatile signed int vint32_t;
@@ -41,8 +43,8 @@ extern unsigned short *videoBuffer;
 #define KEY_DOWN_NOW(key)  (~(BUTTONS) & key)
 #define KEY_UP_NOW(key)  ((BUTTONS) & key)
 
-#define false 0
-#define true 1
+//#define false 0
+//#define true 1
 #define UBound 8
 
 typedef enum
@@ -56,15 +58,15 @@ typedef enum
 
 typedef struct Entity
 {
-    char canExit;
+    int8_t canExit;
     short x;
     short y;
     short width;
     short height;
     short xVel;
     short yVel;
-    char isVisible;
-    char removed;
+    bool isVisible;
+    bool removed;
     const uint16_t *image;
 } uEntity;
 

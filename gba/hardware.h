@@ -7,7 +7,7 @@
 
 #ifndef GBA_HARDWARE_H_
 #define GBA_HARDWARE_H_
-#include "myLib.h"
+#include "mylib.h"
 
 #define BUTTONS (*(vuint16_t*)0x04000130)
 

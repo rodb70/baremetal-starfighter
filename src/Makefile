@@ -39,26 +39,26 @@ endif
 
 #-----------------------------------------------------------------------------
 # Declare C files
-CSRC += Bullet.c
+CSRC += bullet.c
 CSRC += explosion1.c
 CSRC += explosion2.c
 CSRC += explosion3.c
 CSRC += font.c
-CSRC += GameOverScreen.c
-CSRC += HealthPickup.c
-CSRC += KusInt.c
+CSRC += gameoverscreen.c
+CSRC += healthpickup.c
+CSRC += kusint.c
 CSRC += main.c
-CSRC += Missile.c
-CSRC += RedBullet.c
-CSRC += Rocket.c
-CSRC += RocketPickup.c
-CSRC += ShieldPickup.c
-CSRC += ShotgunPickup.c
+CSRC += missile.c
+CSRC += redbullet.c
+CSRC += rocket.c
+CSRC += rocketpickup.c
+CSRC += shieldpickup.c
+CSRC += shotgunpickup.c
 CSRC += text.c
 CSRC += title.c
-CSRC += TurCorv.c
-CSRC += TurInt.c
-CSRC += TurMissCorv.c
+CSRC += turcorv.c
+CSRC += turint.c
+CSRC += turmisscorv.c
 
 #-----------------------------------------------------------------------------
 # If set to y then the include path is added to with this directory

@@ -1,4 +1,4 @@
-#include "myLib.h"
+#include "mylib.h"
 #include "text.h"
 
 void drawChar(int row, int col, char ch, uint16_t color)

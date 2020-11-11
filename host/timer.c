@@ -1,6 +1,5 @@
 #include <stdint.h>
-#include "myLib.h"
-
+#include "mylib.h"
 #include <time.h>
 
 uint64_t timer_tick( void )

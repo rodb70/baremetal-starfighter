@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#include "myLib.h"
+#include "mylib.h"
 #include <string.h>
 #include <assert.h>
 
@@ -10,8 +10,9 @@ typedef struct
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Texture *texture;
+//    uint16_t tft_fb0[ HEIGHT ][ WIDTH ];
     uint16_t tft_fb[ HEIGHT ][ WIDTH ];
-    uint16_t tft_fb1[ HEIGHT ][ WIDTH ];
+//    uint16_t tft_fb1[ HEIGHT ][ WIDTH ];
 
 } monitor_t;
 
@@ -91,7 +92,10 @@ int frame_buffer_switch(int offset)
 
 void setPixel(int row, int col, unsigned short color)
 {
-    m->tft_fb[ col ][ row ] = color;
+    if( col > 0 && col < HEIGHT && row > 0 && row < WIDTH )
+    {
+        m->tft_fb[ col ][ row ] = color;
+    }
 }
 
 void drawRectangle(int row, int col, int height, int width, unsigned short color)
@@ -106,12 +110,14 @@ void drawRectangle(int row, int col, int height, int width, unsigned short color
     {
         endh = HEIGHT;
     }
-
-    for( int h = col; h < endh; h++ )
+    if( col + height >= 0 && row + width >= 0 )
     {
-        for( int w = row; w < endw; w++ )
+        for( int h = col; h < endh; h++ )
         {
-            m->tft_fb[ h ][ w ] = color;
+            for( int w = row; w < endw; w++ )
+            {
+                setPixel( w, h, color );
+            }
         }
     }
 }
@@ -122,7 +128,7 @@ void background_color(int height, int width, unsigned short color)
     {
         for( int w = 0; w < width; w++ )
         {
-            m->tft_fb[ h ][ w ] = color;
+            setPixel( w, h, color );
         }
     }
 }
@@ -137,14 +143,30 @@ void fillinScreen(volatile unsigned short color)
     background_color( HEIGHT, WIDTH, color );
 }
 
-void drawImage3(int row, int col, int width, int height, const unsigned short *image)
+void drawImage3(int x, int y, int width, int height, const unsigned short *image)
 {
-    for( int c = 0; c < height; c++ )
+    for( int j = ((y >= UBound) ? (0) : (UBound - y)); j < height; j++ )
     {
-        for( int r = 0; r < width; r++ )
+        if( x < 240 && x >= 0 )
         {
-            m->tft_fb[ col + c ][ row + r ] = *image;
-            image++;
+            int rowlen = width;
+            if( 240 - x < width )
+            {
+                rowlen = (240 - x);
+            }
+            for( int r = 0; r < rowlen; r++ )
+            {
+                setPixel( x + r, y + j, *image );
+                image++;
+            }
+        }
+        else if( x < 0 && (width + x) > 0 )
+        {
+            int rowlen = width + x;
+            for( int r = 0; r < rowlen; r++ )
+            {
+                setPixel( x + r, y + j, *(image + (j * width - x)));
+            }
         }
     }
 }
@@ -156,13 +178,12 @@ void undrawImage3(int row, int col, int width, int height, const uint16_t *image
         src += OFFSET( row, c + col, WIDTH );
         for( int r = 0; r < width; r++ )
         {
-            m->tft_fb[ col + c ][ row + r ] = *src;
+            setPixel(row + r, col + c, *src );
             src++;
         }
     }
 }
 
-bool print = false;
 /**
  * draw a partial image
  *
@@ -179,7 +200,7 @@ void drawImage3FromRow(int r, int c, int rowOffset, int width, int height, const
     {
         for( int row = rowOffset, pos = 0; row < width; ++row, ++pos )
         {
-            m->tft_fb[ c ][ r + pos ] = *( image + row );
+            setPixel( r + pos, c, *( image + row ));
         }
         image += width;
     }
@@ -199,7 +220,7 @@ void drawHorizontal(int row, int col, int width, unsigned int color)
     }
     for( int r = row; r < endw; r++ )
     {
-        m->tft_fb[ col ][ r ] = color;
+        setPixel( r, col, color );
     }
 }
 
@@ -220,7 +241,7 @@ void drawVertical(int row, int col, int height, int width, unsigned int color)
     {
         for( int r = row; r < endw; r++ )
         {
-            m->tft_fb[ c ][ r ] = color;
+            setPixel( r, c, color );
         }
     }
 }

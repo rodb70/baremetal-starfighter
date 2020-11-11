@@ -2,24 +2,24 @@
 //gtID 903161493
 //jake@wartofsky.net
 
-#include "myLib.h"
+#include "mylib.h"
 #include "title.h"
-#include "KusInt.h"
-#include "TurInt.h"
-#include "TurCorv.h"
-#include "TurMissCorv.h"
+#include "kusint.h"
+#include "turint.h"
+#include "turcorv.h"
+#include "turmisscorv.h"
 #include "explosion1.h"
 #include "explosion2.h"
 #include "explosion3.h"
-#include "Bullet.h"
-#include "RedBullet.h"
-#include "Rocket.h"
-#include "Missile.h"
-#include "HealthPickup.h"
-#include "ShieldPickup.h"
-#include "ShotgunPickup.h"
-#include "RocketPickup.h"
-#include "GameOverScreen.h"
+#include "bullet.h"
+#include "redbullet.h"
+#include "rocket.h"
+#include "missile.h"
+#include "healthpickup.h"
+#include "shieldpickup.h"
+#include "shotgunpickup.h"
+#include "rocketpickup.h"
+#include "gameoverscreen.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "text.h"
@@ -98,8 +98,8 @@ int main(void)
                 startDown = true;
                 reset();
                 draw = false;
-                drawRectangle( 0, 0, 240, UBound, barColor );
-                drawRectangle( 0, UBound, 240, (160 - UBound), bgColor );
+                drawRectangle( 0, 0, UBound, WIDTH, barColor );
+                drawRectangle( 0, UBound, (HEIGHT - UBound), WIDTH, bgColor );
                 level = 1;
                 state = NextLevel;
             }
@@ -117,19 +117,19 @@ int main(void)
                 if( level == 1 )
                 {
                     //bgColor = RGB(0,0,0);
-                    drawRectangle( 0, 0, 240, 160, bgColor );
+                    drawRectangle( 0, 0, HEIGHT, WIDTH, bgColor );
                     drawString( 30, 30, "Mission 1", RGB( 20, 20, 24 ) );
-                    drawString( 30, 40, "The Outer Rim", RGB( 20, 20, 24 ) );
-                    drawString( 70, 102, "Press Start", RGB( 20, 20, 24 ) );
+                    drawString( 40, 30, "The Outer Rim", RGB( 20, 20, 24 ) );
+                    drawString( 102, 70, "Press Start", RGB( 20, 20, 24 ) );
                     draw = true;
                 }
                 else if( level == 2 )
                 {
                     //bgColor = RGB(0,0,0);
-                    drawRectangle( 0, 0, 240, 160, bgColor );
+                    drawRectangle( 0, 0, HEIGHT, WIDTH, bgColor );
                     drawString( 30, 30, "Mission 2", RGB( 20, 20, 24 ) );
-                    drawString( 30, 40, "The Great Wastelands", RGB( 20, 20, 24 ) );
-                    drawString( 70, 102, "Press Start", RGB( 20, 20, 24 ) );
+                    drawString( 40, 30, "The Great Wastelands", RGB( 20, 20, 24 ) );
+                    drawString( 102, 70, "Press Start", RGB( 20, 20, 24 ) );
                     lives += 1;
                     draw = true;
                 }
@@ -142,8 +142,8 @@ int main(void)
             {
                 startDown = true;
                 draw = false;
-                drawRectangle( 0, 0, 240, UBound, barColor );
-                drawRectangle( 0, UBound, 240, (160 - UBound), bgColor );
+                drawRectangle( 0, 0, UBound, WIDTH, barColor );
+                drawRectangle( 0, UBound, (HEIGHT - UBound), WIDTH, bgColor );
                 state = Game;
             }
             break;
@@ -172,7 +172,7 @@ int main(void)
             if( draw == false )
             {
                 draw = true;
-                drawRectangle( 0, 0, 240, 160, RGB( 0, 0, 5 ) );
+                drawRectangle( 0, 0, HEIGHT, WIDTH, RGB( 0, 0, 5 ) );
                 drawString( 30, 30, "Congratulations! You've won!", RGB( 20, 20, 24 ) );
                 sprintf( buffer, "Your score: %d", score );
                 drawString( 70, 102, buffer, RGB( 20, 20, 24 ) );
@@ -202,7 +202,6 @@ GameState gameOn(void)
     char startDown = true;
     while( 1 )
     {
-
         //Player controls
         if( KEY_DOWN_NOW( BUTTON_RIGHT ) )
         {
@@ -422,8 +421,8 @@ GameState gameOn(void)
 
         gameClock++;
         waitForVblank();
-
     }
+
     return Start;
 }
 
@@ -448,26 +447,29 @@ uShip createShip(int x, int y, int width, int height, const unsigned short *imag
     ship.health = 50;
     ship.ai = 0;
     ship.reload = 0;
+
     return ship;
 }
 
 uShip* createEnemyShip(int x, int y, int width, int height, const unsigned short *image)
 {
     uShip ship = createShip( x, y, width, height, image );
-    enemies[numEnemies] = ship;
+    enemies[ numEnemies ] = ship;
+
     if( numEnemies < 20 )
     {
-        enemies[numEnemies] = ship;
+        enemies[ numEnemies ] = ship;
         numEnemies += 1;
         return (enemies + numEnemies - 1);
     }
+
     return enemies;
 }
 
 uProjectile* createProjectile(int x, int y, int width, int height, const unsigned short *image)
 {
-
     uProjectile projectile;
+
     projectile.entity.x = x;
     projectile.entity.y = y;
     projectile.entity.xVel = 4;
@@ -480,12 +482,16 @@ uProjectile* createProjectile(int x, int y, int width, int height, const unsigne
     projectile.entity.removed = false;
     projectile.damage = 20;
     projectile.team = 0;
+
     if( numProjectiles < 40 )
     {
-        projectiles[numProjectiles] = projectile;
+        uProjectile *rtnv = &projectiles[ numProjectiles ];
         numProjectiles += 1;
-        return (projectiles + numProjectiles - 1);
+        *rtnv = projectile;
+
+        return rtnv;
     }
+
     return projectiles;
 }
 
@@ -494,6 +500,7 @@ void createExplosion(int x, int y)
     if( numExplosions < 20 )
     {
         uEntity explosion;
+
         explosion.x = x;
         explosion.y = y;
         explosion.width = EXPLOSION1_WIDTH;
@@ -508,8 +515,8 @@ void createExplosion(int x, int y)
 
 uPickup* createPickup(int x, int y, int width, int height, const unsigned short *image)
 {
-
     uPickup Pickup;
+
     Pickup.entity.x = x;
     Pickup.entity.y = y;
     Pickup.entity.xVel = 0;
@@ -521,18 +528,20 @@ uPickup* createPickup(int x, int y, int width, int height, const unsigned short 
     Pickup.entity.isVisible = true;
     Pickup.entity.removed = false;
     Pickup.type = Health;
+
     if( numPickups < 5 )
     {
-        pickups[numPickups] = Pickup;
+        pickups[ numPickups ] = Pickup;
         numPickups += 1;
         return (pickups + numPickups - 1);
     }
+
     return pickups;
 }
 
 void destroyEnemy(uShip *ship)
 {
-    drawRectangle( ship->entity.x, ship->entity.y, ship->entity.width, ship->entity.height, bgColor );
+    drawRectangle( ship->entity.x, ship->entity.y, ship->entity.height, ship->entity.width, bgColor );
     if( ship->entity.isVisible && ship->entity.x >= 0 )
     {
         createExplosion( ship->entity.x, ship->entity.y );
@@ -543,15 +552,18 @@ void destroyEnemy(uShip *ship)
 
 void removeProjectile(uProjectile *projectile)
 {
-    drawRectangle( projectile->entity.x, projectile->entity.y, projectile->entity.width,
-            projectile->entity.height, bgColor );
+    drawRectangle( projectile->entity.x,
+                   projectile->entity.y,
+                   projectile->entity.height,
+                   projectile->entity.width,
+                   bgColor );
     numProjectiles -= 1;
-    *projectile = projectiles[numProjectiles];
+    *projectile = projectiles[ numProjectiles ];
 }
 
 void removePickup(uPickup *pickup)
 {
-    drawRectangle( pickup->entity.x, pickup->entity.y, pickup->entity.width, pickup->entity.height, bgColor );
+    drawRectangle( pickup->entity.x, pickup->entity.y, pickup->entity.height, pickup->entity.width, bgColor );
     numPickups -= 1;
     *pickup = pickups[numPickups];
 }
@@ -560,16 +572,17 @@ void removePickup(uPickup *pickup)
 void washEntity(uEntity *entity)
 {
     int j = ((entity->y >= UBound) ? (0) : (UBound - entity->y));
-    drawRectangle( entity->x, entity->y + j, entity->width, (entity->height) - j, bgColor );
+    drawRectangle( entity->x, entity->y + j, (entity->height) - j, entity->width, bgColor );
 }
 
-char level1()
+char level1( void )
 {
     if( gameClock == 300 )
     {
         for( int i = 0; i < 3; i++ )
         {
             uShip *ship = createEnemyShip( 260, 72, TURINT_WIDTH, TURINT_HEIGHT, TurInt );
+
             ship->health = 40;
             ship->entity.x += i * 10;
             ship->entity.y += i * 20;
@@ -751,7 +764,7 @@ char level1()
     return false;
 }
 
-char level2()
+char level2(void)
 {
     if( gameClock == 100 )
     {
@@ -769,7 +782,7 @@ char level2()
     {
         for( int i = 0; i < 5; i++ )
         {
-            uShip *ship = createEnemyShip( 240, 72, TURINT_WIDTH, TURINT_HEIGHT, TurInt );
+            uShip *ship = createEnemyShip( WIDTH, 72, TURINT_WIDTH, TURINT_HEIGHT, TurInt );
             ship->health = 40;
             ship->entity.x += i * 10;
             ship->entity.y += i * 10;
@@ -781,7 +794,7 @@ char level2()
     {
         for( int i = 0; i < 5; i++ )
         {
-            uShip *ship = createEnemyShip( 240, 72, TURINT_WIDTH, TURINT_HEIGHT, TurInt );
+            uShip *ship = createEnemyShip( WIDTH, 72, TURINT_WIDTH, TURINT_HEIGHT, TurInt );
             ship->health = 40;
             ship->entity.x += i * 10;
             ship->entity.y += i * 10;
@@ -839,7 +852,7 @@ char level2()
     }
     if( gameClock == 1400 )
     {
-        uShip *ship = createEnemyShip( 160, -20, TURMISSCORV_WIDTH, TURMISSCORV_HEIGHT, TurMissCorv );
+        uShip *ship = createEnemyShip( HEIGHT, -20, TURMISSCORV_WIDTH, TURMISSCORV_HEIGHT, TurMissCorv );
         ship->health = 400;
         ship->ai = 5;
     }
@@ -920,19 +933,20 @@ void updateEntity(uEntity *entity)
 {
     entity->x += entity->xVel;
     entity->y += entity->yVel;
+
     if( !entity->canExit )
     {
-        if( entity->x > (240 - entity->width) )
+        if( entity->x > (WIDTH - entity->width) )
         {
-            entity->x = 240 - entity->width;
+            entity->x = WIDTH - entity->width;
         }
         if( entity->x < 0 )
         {
             entity->x = 0;
         }
-        if( entity->y > (160 - entity->height) )
+        if( entity->y > (HEIGHT - entity->height) )
         {
-            entity->y = 160 - entity->height;
+            entity->y = HEIGHT - entity->height;
         }
         if( entity->y < UBound )
         {
@@ -957,7 +971,7 @@ char updatePlayer(uShip *ship)
 
     if( ship->health <= 0 )
     {
-        drawRectangle( ship->entity.x, ship->entity.y, ship->entity.width, ship->entity.height, bgColor );
+        drawRectangle( ship->entity.x, ship->entity.y, ship->entity.height, ship->entity.width, bgColor );
         createExplosion( ship->entity.x, ship->entity.y );
         ship->entity.x = 5;
         ship->entity.y = 72;
@@ -978,6 +992,7 @@ char updatePlayer(uShip *ship)
     }
     updateDisplay();
     updateEntity( &(ship->entity) );
+
     return true;
 }
 
@@ -1038,7 +1053,7 @@ void updateExplosion(uEntity *explosion)
     }
     else if( explosion->canExit == 18 )
     {
-        drawRectangle( explosion->x, explosion->y, explosion->width, explosion->height, bgColor );
+        drawRectangle( explosion->x, explosion->y, explosion->height, explosion->width, bgColor );
     }
     explosion->canExit += 1;
 }
@@ -1048,49 +1063,49 @@ void updatePickup(uPickup *Pickup)
     updateEntity( &(Pickup->entity) );
 }
 
-void updateDisplay()
+void updateDisplay( void )
 {
     if( oldScore != score )
     {
         oldScore = score;
         sprintf( buffer, "Score %d", score );
-        drawRectangle( 175, 0, 65, UBound, barColor ); // The 14 is allowing for as many as 14 characters
-        drawString( 175, 0, buffer, RGB( 31, 31, 31 ) );
+        drawRectangle( 175, 0, UBound, 65, barColor ); // The 14 is allowing for as many as 14 characters
+        drawString( 0, 175, buffer, RGB( 31, 31, 31 ) );
     }
     if( oldLevel != level )
     {
         oldLevel = level;
         sprintf( buffer, "Lvl %d", level );
-        drawRectangle( 140, 0, 35, UBound, barColor ); // The 14 is allowing for as many as 14 characters
-        drawString( 140, 0, buffer, RGB( 31, 31, 31 ) );
+        drawRectangle( 140, 0, UBound, 35, barColor ); // The 14 is allowing for as many as 14 characters
+        drawString( 0, 140, buffer, RGB( 31, 31, 31 ) );
     }
     if( oldHealth != player.health )
     {
         oldHealth = player.health;
-        drawRectangle( 85, 0, 50, UBound, barColor );
-        drawRectangle( 85, 1, 50, 6, RGB( 31, 0, 0 ) );
+        drawRectangle( 85, 0, UBound, 50, barColor );
+        drawRectangle( 85, 1, 6, 50, RGB( 31, 0, 0 ) );
         if( player.health <= 50 )
         {
-            drawRectangle( 85, 1, player.health, 6, RGB( 0, 31, 0 ) );
+            drawRectangle( 85, 1, 6, player.health, RGB( 0, 31, 0 ) );
         }
         else
         {
-            drawRectangle( 85, 1, 50, 6, RGB( 0, 31, 0 ) );
-            drawRectangle( 85, 1, (player.health - 50), 6, RGB( 31, 0, 22 ) );
+            drawRectangle( 85, 1, 6, 50, RGB( 0, 31, 0 ) );
+            drawRectangle( 85, 1, 6, (player.health - 50), RGB( 31, 0, 22 ) );
         }
     }
     if( oldAmmo != ammo )
     {
         oldAmmo = ammo;
         sprintf( buffer, "Rkt %d", ammo );
-        drawRectangle( 45, 0, 40, UBound, barColor ); // The 14 is allowing for as many as 14 characters
-        drawString( 45, 0, buffer, RGB( 31, 31, 31 ) );
+        drawRectangle( 45, 0, UBound, 40, barColor ); // The 14 is allowing for as many as 14 characters
+        drawString( 0, 45, buffer, RGB( 31, 31, 31 ) );
     }
     if( oldLives != lives )
     {
         oldLives = lives;
         sprintf( buffer, "Life %d", lives );
-        drawRectangle( 0, 0, 45, UBound, barColor ); // The 14 is allowing for as many as 14 characters
+        drawRectangle( 0, 0, UBound, 45, barColor ); // The 14 is allowing for as many as 14 characters
         drawString( 0, 0, buffer, RGB( 31, 31, 31 ) );
     }
 
@@ -1140,7 +1155,7 @@ char detectCollision(uEntity a, uEntity b)
     }
 }
 
-void playerGun()
+void playerGun(void)
 {
     if( shotgunTime <= 0 )
     {
@@ -1164,7 +1179,7 @@ void playerGun()
     }
 }
 
-void playerRocket()
+void playerRocket(void)
 {
     uProjectile *projectile = createProjectile( player.entity.x + player.entity.width,
             player.entity.y + (player.entity.height / 2), ROCKET_WIDTH, ROCKET_HEIGHT, Rocket );
@@ -1281,7 +1296,7 @@ void ai5(uShip *ship)
         ship->reload = 90;
     }
 
-    if( ship->entity.x > 240 )
+    if( ship->entity.x >= WIDTH )
     {
         ship->entity.xVel = -1;
     }
@@ -1321,7 +1336,7 @@ void ai6(uShip *ship)
 }
 
 //Resets player stats
-void reset()
+void reset(void)
 {
     player.health = 50;
     player.entity.x = 5;
@@ -1346,7 +1361,7 @@ void reset()
 }
 
 //Sets old values to impossible values so that the UI will update
-void resetUI()
+void resetUI(void)
 {
     oldHealth = -1;
     oldAmmo = -1;
